@@ -11,20 +11,31 @@ if(mysql_error())
 
 if(isset($_POST['btnsub']))
 {
-    echo "<script>  alert('Start Your Work'); </script>";
+
+    $n=$_POST['name'];
+    $p=$_POST['phone'];
+    $a=$_POST['address'];
+    $e=$_POST['email'];
+    $file=$_FILES['cv']['name'];
+    $file_loc=$_FILES['cv']['tmp_name'];
+    move_uploaded_file($file_loc,"CV/$file");
+
+    if($_FILES['cv']['size']  > 5000000 )
+    {
+       echo "<script>alert('File to Large')</script>";
+    }
+    else
+    {
+      $query=mysql_query("INSERT INTO inquiry values('','$n','$p','$a','$e','$file')");
+      if($query){
+           echo "<script> alert('Form Submitted')</script>";
+      }
+      else{
+           die(mysql_error());
+      }
+    }
 }
-
-
-
-
-
-
-
-
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en-us">
     <head>
@@ -57,7 +68,7 @@ if(isset($_POST['btnsub']))
               <div class="container" >                 
                     <div class="col-md-4 col-md-offset-4">
                         <h3> Contact Form  </h3>
-                        <form class="form-horizontal" method="post" >
+                        <form class="form-horizontal" method="post"   enctype='multipart/form-data' >
                             <div class="form-group">           
                                     <label class="control-label col-md-2" for="name">Name</label>
                                     <input type="text" class="form-control" name="name" pattern="[A-Za-z\s]{1,32}" placeholder="Enter Name" required>                              
@@ -74,7 +85,7 @@ if(isset($_POST['btnsub']))
 
                             <div class="form-group">
                                     <label for="Email">Email</label>
-                                    <input type="email" class="form-control"  placeholder="Enter Your Email-ID" required>
+                                    <input type="email" class="form-control" name="email"  placeholder="Enter Your Email-ID" required>
                             </div>
 
                             <div class="form-group">
